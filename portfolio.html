@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Portfolio — Edit me in the SITE config</title>
+<meta name="description" content="A minimal developer portfolio inspired by codebucks27's Next.js starter." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f1ebe0;
+    --bg-2: #ebe3d3;
+    --ink: #131312;
+    --ink-soft: #2a2a26;
+    --muted: #6b6a63;
+    --rule: #15151440;
+    --accent: #c14b1d;        /* burnt orange */
+    --accent-soft: #d97a4a;
+    --paper-grain: 0.04;
+    --grid: #1a1a1610;
+  }
+  html.dark {
+    --bg: #14140f;
+    --bg-2: #1c1c16;
+    --ink: #f1ebe0;
+    --ink-soft: #d8d3c5;
+    --muted: #8c8a80;
+    --rule: #f1ebe025;
+    --accent: #ff7a3a;
+    --accent-soft: #ffb38a;
+    --paper-grain: 0.05;
+    --grid: #f1ebe008;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Outfit', system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100vh;
+    /* dotted grid + paper grain */
+    background-image:
+      radial-gradient(var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -1px -1px;
+    transition: background-color .35s ease, color .35s ease;
+  }
+  body::before {
+    /* subtle paper noise */
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: var(--paper-grain);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  ::selection { background: var(--accent); color: #fff; }
+
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 36px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ───── NAV ───── */
+  nav.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    position: sticky;
+    top: 18px;
+    z-index: 50;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Instrument Serif', serif;
+    font-size: 24px;
+    letter-spacing: 0.5px;
+  }
+  .logo .dot {
+    width: 10px; height: 10px; border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  .menu { display: flex; gap: 4px; align-items: center; }
+  .menu a {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+    transition: color .2s ease;
+  }
+  .menu a:hover { color: var(--accent); }
+  .menu a::after {
+    content: "";
+    position: absolute;
+    left: 14px; right: 14px; bottom: 4px;
+    height: 1px; background: currentColor;
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .25s ease;
+  }
+  .menu a:hover::after { transform: scaleX(1); }
+
+  .controls { display: flex; gap: 8px; align-items: center; }
+  .icon-btn {
+    width: 38px; height: 38px;
+    display: grid; place-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--rule);
+    transition: background .2s ease, transform .2s ease;
+  }
+  .icon-btn:hover { background: var(--bg-2); transform: translateY(-1px); }
+  .icon-btn svg { width: 16px; height: 16px; }
+
+  .hamburger { display: none; }
+
+  /* ───── HERO ───── */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 40px;
+    align-items: center;
+    margin-top: 70px;
+    position: relative;
+  }
+
+  .lightbulb {
+    position: absolute;
+    top: -40px; right: 38%;
+    width: 110px;
+    color: var(--ink);
+    opacity: .85;
+  }
+
+  .tagline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 22px;
+    padding: 6px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg) 60%, transparent);
+  }
+  .tagline::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 999px;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+
+  .hero h1 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(44px, 6.4vw, 86px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0 0 28px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero p.lede {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 52ch;
+    margin: 0 0 28px;
+  }
+  .hero .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 22px;
+    border-radius: 999px;
+    font-weight: 500;
+    font-size: 15px;
+    transition: transform .2s ease, background .2s ease, color .2s ease;
+    border: 1px solid var(--ink);
+  }
+  .btn.primary {
+    background: var(--ink); color: var(--bg);
+  }
+  .btn.primary:hover { transform: translateY(-2px); background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.ghost { background: transparent; }
+  .btn.ghost:hover { background: var(--bg-2); transform: translateY(-2px); }
+
+  /* portrait + spinning badge */
+  .portrait-wrap {
+    position: relative;
+    justify-self: center;
+    width: min(420px, 100%);
+    aspect-ratio: 1 / 1.05;
+  }
+  .portrait {
+    width: 100%; height: 100%;
+    border-radius: 28px;
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, var(--bg-2), color-mix(in srgb, var(--accent) 18%, var(--bg-2)));
+    border: 1px solid var(--rule);
+    position: relative;
+    display: grid; place-items: center;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+  }
+  .portrait::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(80% 60% at 30% 20%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 60%),
+      repeating-linear-gradient(45deg, transparent 0 12px, color-mix(in srgb, var(--ink) 4%, transparent) 12px 13px);
+    z-index: 0;
+  }
+  .portrait.has-image::after { display: none; } /* hide decorative overlay once a real photo loads */
+  .portrait img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    position: absolute; inset: 0;
+    z-index: 1;
+    object-position: 50% 20%; /* shift visible region up so top of head is preserved */
+  }
+
+  .badge {
+    position: absolute;
+    right: -28px; bottom: -28px;
+    width: 152px; height: 152px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--bg);
+    display: grid; place-items: center;
+    box-shadow: 0 10px 40px -10px color-mix(in srgb, var(--ink) 50%, transparent);
+    z-index: 5; /* unambiguously above the portrait + image */
+  }
+  .badge .arrow {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-family: 'Instrument Serif', serif;
+    font-size: 36px;
+    transform: rotate(-25deg);
+  }
+  .badge svg.ring {
+    width: 100%; height: 100%;
+    animation: spin 18s linear infinite;
+  }
+  .badge text {
+    fill: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ───── SECTIONS ───── */
+  section { margin-top: 140px; position: relative; }
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 36px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-head h2 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(32px, 4vw, 52px);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .section-head .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: .2em;
+  }
+
+  /* about */
+  .about {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .about p { color: var(--ink-soft); font-size: 18px; }
+  .about p + p { margin-top: 16px; }
+  .stack {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    padding: 22px;
+    border: 1px solid var(--rule);
+    border-radius: 22px;
+    background: var(--bg-2);
+  }
+  .stack h4 {
+    grid-column: 1/-1;
+    margin: 0 0 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .stack span {
+    padding: 8px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--bg);
+    font-size: 13.5px;
+    text-align: center;
+  }
+
+  /* projects */
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+  .card {
+    border: 1px solid var(--rule);
+    border-radius: 22px;
+    padding: 24px;
+    background: var(--bg-2);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: transform .3s ease, border-color .3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%);
+    opacity: 0; transition: opacity .35s ease;
+  }
+  .card:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--accent) 60%, var(--rule)); }
+  .card:hover::before { opacity: 1; }
+  .card .thumb {
+    aspect-ratio: 16 / 10;
+    border-radius: 14px;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--accent) 30%, var(--bg-2)), var(--bg-2));
+    border: 1px solid var(--rule);
+    display: grid; place-items: center;
+    font-family: 'Instrument Serif', serif;
+    font-size: 42px;
+    color: var(--ink);
+    position: relative; z-index: 1;
+  }
+  .card h3 {
+    margin: 4px 0 0;
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.15;
+    position: relative; z-index: 1;
+  }
+  .card-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    position: relative; z-index: 1;
+    margin-top: -4px;
+  }
+  .card p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    flex: 1;
+    position: relative; z-index: 1;
+  }
+  .card .tags {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .card .tags span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 8px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--muted);
+  }
+  .card .links {
+    display: flex; gap: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--rule);
+    position: relative; z-index: 1;
+    min-height: 1px;
+  }
+  .card .links:empty { padding-top: 0; border-top: 0; }
+  .card .links a {
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .card .links a:hover { color: var(--accent); }
+
+  /* articles */
+  .articles { display: flex; flex-direction: column; }
+  .article {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 24px;
+    padding: 22px 4px;
+    border-bottom: 1px solid var(--rule);
+    align-items: center;
+    transition: padding .25s ease, color .25s ease;
+  }
+  .article:hover { padding-left: 18px; color: var(--accent); }
+  .article .date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .1em;
+  }
+  .article h3 {
+    margin: 0;
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: 24px;
+  }
+  .article .read {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* contact */
+  .contact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    padding: 56px;
+    border: 1px solid var(--rule);
+    border-radius: 28px;
+    background:
+      radial-gradient(70% 100% at 0% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%),
+      var(--bg-2);
+  }
+  .contact h2 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(36px, 5vw, 64px);
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .contact h2 em { font-style: italic; color: var(--accent); }
+  .contact p { color: var(--ink-soft); margin: 16px 0 0; }
+  .contact .email {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 4px;
+    display: inline-block;
+    margin-top: 24px;
+  }
+
+  /* footer */
+  footer {
+    margin-top: 80px;
+    padding: 30px 0 0;
+    border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  footer .socials { display: flex; gap: 14px; }
+  footer .socials a:hover { color: var(--accent); }
+
+  /* fixed left socials */
+  .rail {
+    position: fixed;
+    left: 24px; bottom: 24px;
+    display: flex; flex-direction: column; gap: 10px;
+    z-index: 40;
+  }
+  .rail a {
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: blur(6px);
+    transition: transform .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .rail a:hover { transform: translateY(-2px); color: var(--accent); border-color: var(--accent); }
+  .rail svg { width: 15px; height: 15px; }
+
+  /* page-load reveal */
+  .reveal { opacity: 0; transform: translateY(14px); animation: fadeUp .8s cubic-bezier(.2,.7,.2,1) forwards; }
+  .reveal.d1 { animation-delay: .15s; }
+  .reveal.d2 { animation-delay: .25s; }
+  .reveal.d3 { animation-delay: .35s; }
+  .reveal.d4 { animation-delay: .45s; }
+  @keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+  /* responsive */
+  @media (max-width: 900px) {
+    .wrap { padding: 18px 20px 80px; }
+    nav.top { padding: 10px 14px; }
+    .menu { display: none; }
+    .hamburger { display: grid; }
+    .hero { grid-template-columns: 1fr; margin-top: 40px; }
+    .lightbulb { width: 70px; right: 6%; top: -20px; }
+    .portrait-wrap { order: -1; max-width: 320px; }
+    .badge { width: 110px; height: 110px; right: -10px; bottom: -10px; }
+    .badge .arrow { font-size: 26px; }
+    .about { grid-template-columns: 1fr; gap: 28px; }
+    .projects { grid-template-columns: 1fr; }
+    .article { grid-template-columns: 1fr; gap: 4px; }
+    .article .read { display: none; }
+    .contact { grid-template-columns: 1fr; padding: 32px; }
+    .rail { display: none; }
+    section { margin-top: 90px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- NAV -->
+  <nav class="top reveal">
+    <a href="#home" class="logo"><span class="dot"></span><span id="logo-name">YN</span></a>
+    <div class="menu">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#articles">Highlights</a>
+      <a id="nav-resume" href="#" target="_blank" rel="noopener">Resume<span class="ext"> ↗</span></a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="controls">
+      <a class="icon-btn" id="nav-twitter" href="#" aria-label="Twitter">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.16 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a class="icon-btn" id="nav-github" href="#" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2.16c-3.2.7-3.88-1.37-3.88-1.37-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.34.95.1-.74.4-1.24.72-1.52-2.55-.29-5.24-1.27-5.24-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.15 1.17.91-.26 1.89-.39 2.86-.39s1.95.13 2.86.39c2.18-1.48 3.14-1.17 3.14-1.17.62 1.57.23 2.73.11 3.02.74.8 1.18 1.82 1.18 3.07 0 4.4-2.69 5.36-5.25 5.65.41.36.77 1.05.77 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+      <a class="icon-btn" id="nav-linkedin" href="#" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+      </a>
+      <button class="icon-btn" id="theme" aria-label="Toggle theme">
+        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home" class="hero">
+    <svg class="lightbulb reveal d1" viewBox="0 0 64 96" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <path d="M32 6c-12 0-20 9-20 20 0 8 4 13 8 17 3 3 4 5 4 9v3h16v-3c0-4 1-6 4-9 4-4 8-9 8-17 0-11-8-20-20-20z"/>
+      <path d="M24 70h16M26 76h12M28 82h8"/>
+      <path d="M32 26v22M24 36l8 6 8-6"/>
+    </svg>
+
+    <div>
+      <div class="tagline reveal d1" id="hero-tagline">CS STUDENT · IMSA</div>
+      <h1 class="reveal d1">
+        Building <em>AI</em> for medicine.<br/>Hard problems, real&nbsp;stakes.
+      </h1>
+      <p class="lede reveal d2" id="bio-short">
+        I'm <strong id="hero-name">Riyan Jain</strong>, a graduating senior at the Illinois Mathematics and Science Academy heading to UC Berkeley this fall to study CS. I work at the intersection of AI and biomedicine — from a live skin cancer detection tool, to cancer epigenetics research at Rice, to voice-based dementia detection at Memorial Sloan Kettering.
+      </p>
+      <div class="cta-row reveal d3">
+        <a class="btn primary" href="#contact">
+          Get in touch
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn ghost" id="resume-link" href="#">
+          Download CV
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M6 11l6 6 6-6M5 21h14"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="portrait-wrap reveal d2">
+      <div class="portrait" id="portrait">
+        <span>Drop your photo<br/>in SITE.photo</span>
+      </div>
+      <div class="badge" aria-hidden="true">
+        <svg class="ring" viewBox="0 0 200 200">
+          <defs>
+            <path id="circle" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"/>
+          </defs>
+          <text>
+            <textPath href="#circle">BERKELEY '30 • IMSA '26 • BERKELEY '30 • </textPath>
+          </text>
+        </svg>
+        <span class="arrow">↗</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-head">
+      <h2>About <em style="font-style:italic;color:var(--accent)">me</em></h2>
+      <span class="num">01 / ABOUT</span>
+    </div>
+    <div class="about">
+      <div>
+        <p id="bio-1">I'm a graduating senior at IMSA, headed to UC Berkeley this fall to study Computer Science. I spend most of my time writing code at the intersection of AI and biomedicine — places where models touch real people and real outcomes.</p>
+        <p id="bio-2">Over the last few years I've shipped a production skin cancer detection tool at dermidetectai.com, spent two years on a cancer epigenetics project with Dr. Brahmachari's lab at Rice University (presented at AACR; Springer Nature paper out May 2026), and started a longitudinal voice-AI collaboration with Dr. Shouval at Memorial Sloan Kettering Cancer Center on early dementia detection. On the side, I founded Med-Equal, a health equity nonprofit.</p>
+        <p id="bio-3">I like hard problems with real stakes — the kind that don't reduce to leaderboard chasing. When I'm not coding, you'll find me at hackathons, in office hours, or arguing with my own GitHub commits.</p>
+      </div>
+      <div class="stack">
+        <h4>Stack</h4>
+        <span>Python</span>
+        <span>TensorFlow</span>
+        <span>PyTorch</span>
+        <span>scikit-learn</span>
+        <span>MATLAB</span>
+        <span>NEST</span>
+        <span>C#</span>
+        <span>Flask</span>
+        <span>JavaScript</span>
+        <span>HTML / CSS</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-head">
+      <h2>Selected <em style="font-style:italic;color:var(--accent)">work</em></h2>
+      <span class="num">02 / PROJECTS</span>
+    </div>
+    <div class="projects" id="project-grid"></div>
+  </section>
+
+  <!-- ARTICLES -->
+  <section id="articles">
+    <div class="section-head">
+      <h2>Selected <em style="font-style:italic;color:var(--accent)">highlights</em></h2>
+      <span class="num">03 / HIGHLIGHTS</span>
+    </div>
+    <div class="articles" id="article-list"></div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact">
+      <h2>Have an idea?<br/>Let's <em>make</em> it.</h2>
+      <div>
+        <p>I'm open to <strong>research opportunities, internships, and interesting conversations</strong> — particularly anything at the intersection of AI and biomedicine. Email is the fastest way to reach me; I usually reply within a day.</p>
+        <a class="email" id="email-link" href="mailto:riyanpjain@gmail.com">riyanpjain@gmail.com</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span id="copyright">© 2026 — YOUR NAME</span>
+    <div class="socials">
+      <a id="foot-twitter" href="#">Twitter</a>
+      <a id="foot-github" href="#">GitHub</a>
+      <a id="foot-linkedin" href="#">LinkedIn</a>
+    </div>
+  </footer>
+</div>
+
+<!-- fixed social rail (desktop) -->
+<div class="rail">
+  <a id="rail-github" href="#" aria-label="GitHub">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2.16c-3.2.7-3.88-1.37-3.88-1.37-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.34.95.1-.74.4-1.24.72-1.52-2.55-.29-5.24-1.27-5.24-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.15 1.17.91-.26 1.89-.39 2.86-.39s1.95.13 2.86.39c2.18-1.48 3.14-1.17 3.14-1.17.62 1.57.23 2.73.11 3.02.74.8 1.18 1.82 1.18 3.07 0 4.4-2.69 5.36-5.25 5.65.41.36.77 1.05.77 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+  </a>
+  <a id="rail-twitter" href="#" aria-label="Twitter">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.16 17.52h1.833L7.084 4.126H5.117z"/></svg>
+  </a>
+  <a id="rail-linkedin" href="#" aria-label="LinkedIn">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+  </a>
+</div>
+
+<script>
+  /* ──────────────────────────────────────────────────────────────
+     ✏️  EDIT THIS — your portfolio's content lives right here.
+     Everything below is wired up to the page automatically.
+  ────────────────────────────────────────────────────────────── */
+  const SITE = {
+    name: "Riyan Jain",
+    initials: "RJ",
+    tagline: "INCOMING CS @ BERKELEY · SENIOR @ IMSA",
+    location: "Aurora, IL",
+    email: "riyanpjain@gmail.com",
+    photo: "IMG_2090.jpg", // path to your photo file in the repo (sits next to index.html). For a subfolder, use e.g. "images/IMG_2090.jpg".
+    resumeUrl: "RiyanJain-Resume.pdf", // sits next to index.html in the repo. Set to "" or "#" to hide the Resume tab.
+    socials: {
+      twitter: "",                                            // empty → hidden
+      github:  "https://github.com/InsertWittyCommentHere",
+      linkedin:"https://www.linkedin.com/in/riyan-jain"
+    },
+    bioShort: "I'm <strong>Riyan Jain</strong>, a graduating senior at the Illinois Mathematics and Science Academy heading to UC Berkeley this fall to study CS. I work at the intersection of AI and biomedicine — from a live skin cancer detection tool, to cancer epigenetics research at Rice, to voice-based dementia detection at Memorial Sloan Kettering.",
+    bio: [
+      "I'm a graduating senior at IMSA, headed to UC Berkeley this fall to study Computer Science. I spend most of my time writing code at the intersection of AI and biomedicine — places where models touch real people and real outcomes.",
+      "Over the last few years I've shipped a production skin cancer detection tool at dermidetectai.com, spent two years on a cancer epigenetics project with Dr. Brahmachari's lab at Rice University (presented at AACR; Springer Nature paper out May 2026), and started a longitudinal voice-AI collaboration with Dr. Shouval at Memorial Sloan Kettering Cancer Center on early dementia detection. On the side, I founded Med-Equal, a health equity nonprofit.",
+      "I like hard problems with real stakes — the kind that don't reduce to leaderboard chasing. When I'm not coding, you'll find me at hackathons, in office hours, or arguing with my own GitHub commits."
+    ],
+    projects: [
+      {
+        emoji: "🧬",
+        title: "Cancer Epigenetics Research",
+        subtitle: "Rice University · 2023–2025",
+        desc: "Two years with Dr. Brahmachari's lab building deep-learning models that predict transcriptional activity from epigenetic signature maps across cancer and non-cancer cell lines — pointing toward novel biomarkers and therapeutic targets.",
+        tags: ["Deep Learning", "Epigenomics", "Python"],
+        links: [
+          { label: "Details on LinkedIn", url: "https://www.linkedin.com/in/riyan-jain" }
+        ]
+      },
+      {
+        emoji: "🩺",
+        title: "Voice-Based Dementia Detection",
+        subtitle: "MSKCC · 2025–present",
+        desc: "Ongoing collaboration with Dr. Shouval at Memorial Sloan Kettering on a longitudinal voice-AI system that learns gradual cognitive drift across patient recordings — aiming for diagnosis years before clinical symptoms appear.",
+        tags: ["Audio ML", "Temporal Models", "Clinical AI"],
+        links: [
+          { label: "Details on LinkedIn", url: "https://www.linkedin.com/in/riyan-jain" }
+        ]
+      },
+      {
+        emoji: "🔬",
+        title: "Applied ML for Healthcare",
+        subtitle: "Diabilities (2023) · DermiDetect (2024)",
+        desc: "Diabilities: a diabetes risk classifier trained on 250K+ BRFSS responses. DermiDetect: a multi-class skin lesion CNN deployed end-to-end at dermidetectai.com with confidence scores and a clean upload flow.",
+        tags: ["TensorFlow", "Computer Vision", "Flask"],
+        links: [
+          { label: "DermiDetect (live)", url: "https://dermidetectai.com" },
+          { label: "GitHub", url: "https://github.com/InsertWittyCommentHere" }
+        ]
+      },
+      {
+        emoji: "🧠",
+        title: "Neural Computation",
+        subtitle: "IMSA · MATLAB & NEST",
+        desc: "From-scratch Leaky-Integrate-and-Fire and Hodgkin-Huxley neuron models in MATLAB, scaled to 10,000+ neuron NEST simulations used to model and classify the progression of early Alzheimer's disease.",
+        tags: ["MATLAB", "NEST", "Neuroscience"],
+        links: [
+          { label: "GitHub", url: "https://github.com/InsertWittyCommentHere" }
+        ]
+      },
+      {
+        emoji: "⚛️",
+        title: "Computational Modeling",
+        subtitle: "IMSA · C#",
+        desc: "Three C# simulations: 2D acoustic interference between speakers in a closed room, Newtonian rocket navigation paired with XOR-decryption (class competition), and a perceptron-driven predator-prey ecosystem with emergent oscillations.",
+        tags: ["C#", "Physics Sim", "Emergent Systems"],
+        links: [
+          { label: "GitHub", url: "https://github.com/InsertWittyCommentHere" }
+        ]
+      },
+      {
+        emoji: "🌐",
+        title: "Web Development",
+        subtitle: "DermiDetect · Med-Equal",
+        desc: "Two production sites built from scratch with HTML, CSS, JS and Flask — no frameworks. DermiDetect serves a live ML model; Med-Equal is the home of the health equity nonprofit I founded.",
+        tags: ["JavaScript", "Flask", "Full-Stack"],
+        links: [
+          { label: "dermidetectai.com", url: "https://dermidetectai.com" },
+          { label: "med-equal.org", url: "https://med-equal.org" }
+        ]
+      }
+    ],
+    articles: [
+      { tag: "PUBLICATION", title: "Cancer Epigenetics — Springer Nature, with Dr. Brahmachari (Rice)", year: "MAY 2026", url: "https://www.linkedin.com/in/riyan-jain" },
+      { tag: "TALK",        title: "Presented at the AACR Annual Meeting", year: "2024", url: "https://www.linkedin.com/in/riyan-jain" },
+      { tag: "LAUNCH",      title: "DermiDetect ships at dermidetectai.com", year: "2024", url: "https://dermidetectai.com" },
+      { tag: "FOUNDED",     title: "Med-Equal, a health equity nonprofit", year: "2024", url: "https://med-equal.org" }
+    ]
+  };
+
+  // ── render
+  // small helpers: $ throws if missing, $$ silently no-ops so one missing element
+  // doesn't take down the rest of the page render.
+  const $ = id => document.getElementById(id);
+  const setText  = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const setHTML  = (id, v) => { const el = $(id); if (el) el.innerHTML  = v; };
+
+  setText("logo-name",    SITE.initials);
+  setText("hero-name",    SITE.name);
+  setText("hero-tagline", SITE.tagline);
+  setHTML("bio-short",    SITE.bioShort);
+  setText("bio-1",        SITE.bio[0]);
+  setText("bio-2",        SITE.bio[1]);
+  setText("bio-3",        SITE.bio[2]);
+  setText("copyright",    "© 2026 — " + SITE.name.toUpperCase());
+
+  const emailEl = $("email-link");
+  if (emailEl) {
+    emailEl.href = "mailto:" + SITE.email;
+    emailEl.textContent = SITE.email;
+  }
+
+  // hide CV button + Resume tab if no resume URL set
+  const resumeEl = $("resume-link");
+  const navResumeEl = $("nav-resume");
+  if (!SITE.resumeUrl || SITE.resumeUrl === "#") {
+    if (resumeEl) resumeEl.style.display = "none";
+    if (navResumeEl) navResumeEl.style.display = "none";
+  } else {
+    if (resumeEl) {
+      resumeEl.href = SITE.resumeUrl;
+      resumeEl.target = "_blank";
+      resumeEl.rel = "noopener";
+    }
+    if (navResumeEl) {
+      navResumeEl.href = SITE.resumeUrl;
+      // navResumeEl already has target/rel set in markup
+    }
+  }
+
+  // wire socials, hide each one whose URL is empty/missing, and open in new tab
+  for (const k of ["twitter","github","linkedin"]) {
+    const url = SITE.socials[k];
+    ["nav-","foot-","rail-"].forEach(p => {
+      const el = $(p+k);
+      if (!el) return;
+      if (!url) { el.style.display = "none"; return; }
+      el.href = url;
+      el.target = "_blank";
+      el.rel = "noopener";
+    });
+  }
+
+  if (SITE.photo) {
+    const portrait = $("portrait");
+    const img = document.createElement("img");
+    img.src = SITE.photo;
+    img.alt = SITE.name;
+    // only swap in the image once we know it actually loaded — that way a broken
+    // path still leaves the placeholder text visible instead of a blank space.
+    img.onload = () => {
+      portrait.innerHTML = "";
+      portrait.appendChild(img);
+      portrait.classList.add("has-image");
+    };
+    img.onerror = () => {
+      console.warn("Portrait image failed to load:", SITE.photo);
+    };
+  }
+
+  // projects
+  $("project-grid").innerHTML = SITE.projects.map(p => `
+    <article class="card reveal d1">
+      <div class="thumb">${p.emoji}</div>
+      <h3>${p.title}</h3>
+      ${p.subtitle ? `<div class="card-sub">${p.subtitle}</div>` : ""}
+      <p>${p.desc}</p>
+      <div class="tags">${p.tags.map(t => `<span>${t}</span>`).join("")}</div>
+      <div class="links">
+        ${(p.links || []).map(l => `<a href="${l.url}" ${l.url.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${l.label} ↗</a>`).join("")}
+      </div>
+    </article>`).join("");
+
+  // articles → repurposed as highlights: tag | title | year
+  $("article-list").innerHTML = SITE.articles.map(a => `
+    <a class="article" href="${a.url}" ${a.url && a.url.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>
+      <span class="date">${a.tag || a.date || ""}</span>
+      <h3>${a.title}</h3>
+      <span class="read">${a.year || a.read || ""}</span>
+    </a>`).join("");
+
+  // ── theme toggle (persists in memory only, per artifact constraint)
+  let dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const apply = () => {
+    document.documentElement.classList.toggle("dark", dark);
+    $("theme-icon").innerHTML = dark
+      ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" stroke="none"/>'
+      : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>';
+  };
+  apply();
+  $("theme").addEventListener("click", () => { dark = !dark; apply(); });
+
+  // smooth-scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener("click", e => {
+      const id = a.getAttribute("href");
+      if (id.length > 1 && document.querySelector(id)) {
+        e.preventDefault();
+        document.querySelector(id).scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+</script>
+</body>
+</html>
