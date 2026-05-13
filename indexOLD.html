@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Portfolio — Edit me in the SITE config</title>
 <meta name="description" content="A minimal developer portfolio inspired by codebucks27's Next.js starter." />
+<title>I'm Riyan Jain</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -247,6 +247,7 @@
     width: 100%; height: 100%; object-fit: cover; display: block;
     position: absolute; inset: 0;
     z-index: 1;
+    object-position: 50% 20%; /* shift visible region up so top of head is preserved */
   }
 
   .badge {
@@ -258,6 +259,7 @@
     color: var(--bg);
     display: grid; place-items: center;
     box-shadow: 0 10px 40px -10px color-mix(in srgb, var(--ink) 50%, transparent);
+    z-index: 5; /* unambiguously above the portrait + image */
   }
   .badge .arrow {
     position: absolute; inset: 0;
@@ -592,10 +594,10 @@
     <div>
       <div class="tagline reveal d1" id="hero-tagline">CS STUDENT · IMSA</div>
       <h1 class="reveal d1">
-        Building <em>AI</em> for medicine.<br/>Hard problems, real&nbsp;stakes.
+        Building <em>AI</em> for medicine.<br/>Impacting &nbsp;real people.
       </h1>
       <p class="lede reveal d2" id="bio-short">
-        I'm <strong id="hero-name">Riyan Jain</strong>, a graduating senior at the Illinois Mathematics and Science Academy heading to UC Berkeley this fall to study CS. I work at the intersection of AI and biomedicine — from a live skin cancer detection tool, to cancer epigenetics research at Rice, to voice-based dementia detection at Memorial Sloan Kettering.
+        I'm <strong id="hero-name">Riyan Jain</strong>, a graduating senior at the Illinois Mathematics and Science Academy heading to UC Berkeley this fall to study CS. I work at the intersection of AI and biomedicine, hoping to use computational tools to address medical problems: diagnosis, treatment, and even prevention. My goal? <u>To give everyone a fighting chance against their ailments.</u>
       </p>
       <div class="cta-row reveal d3">
         <a class="btn primary" href="#contact">
@@ -725,18 +727,29 @@
       github:  "https://github.com/InsertWittyCommentHere",
       linkedin:"https://www.linkedin.com/in/riyan-jain"
     },
-    bioShort: "I'm <strong>Riyan Jain</strong>, a graduating senior at the Illinois Mathematics and Science Academy heading to UC Berkeley this fall to study CS. I work at the intersection of AI and biomedicine — from a live skin cancer detection tool, to cancer epigenetics research at Rice, to voice-based dementia detection at Memorial Sloan Kettering.",
+    bioShort: "I'm <strong id=\"hero-name\">Riyan Jain</strong>, a graduating senior at the Illinois Mathematics and Science Academy heading to UC Berkeley this fall to study CS. I work at the intersection of AI and biomedicine, hoping to use computational tools to address medical problems from diagnosis to treatment and even prevention. My goal? <u>To give everyone a fighting chance against their ailments.</u>",
     bio: [
-      "I'm a graduating senior at IMSA, headed to UC Berkeley this fall to study Computer Science. I spend most of my time writing code at the intersection of AI and biomedicine — places where models touch real people and real outcomes.",
-      "Over the last few years I've shipped a production skin cancer detection tool at dermidetectai.com, spent two years on a cancer epigenetics project with Dr. Brahmachari's lab at Rice University (presented at AACR; Springer Nature paper out May 2026), and started a longitudinal voice-AI collaboration with Dr. Shouval at Memorial Sloan Kettering Cancer Center on early dementia detection. On the side, I founded Med-Equal, a health equity nonprofit.",
-      "I like hard problems with real stakes — the kind that don't reduce to leaderboard chasing. When I'm not coding, you'll find me at hackathons, in office hours, or arguing with my own GitHub commits."
+      "I'm a graduating senior at IMSA, headed to UC Berkeley this fall to study Computer Science at the College of CDSS. I spend a lot of my time writing code at the intersection of AI and healthcare, hoping that my models can help real people achieve real medical outcomes.",
+      "Over the last few years I've shipped a production skin cancer detection tool at dermidetectai.com, spent two years on a cancer epigenetics project with Dr. Brahmachari from Rice University on a project in epigenetics (presented at AACR; Springer Nature paper out May 2026), and started a longitudinal voice-AI collaboration with Dr. Shouval at Memorial Sloan Kettering Cancer Center on early dementia detection. On the side, I founded Med-Equal, a health equity nonprofit.",
+      "I like to solve problems in the space of early diagnosis and preventative care, using tools like AI. When I'm not coding, you'll find me playing table tennis, presenting at conferences, helping friends with homework, and studying Mandarin."
     ],
     projects: [
+      {
+        emoji: "🔬",
+        title: "Applied ML for Healthcare",
+        subtitle: "Diabilities (2023) · DermiDetect (2024)",
+        desc: "Various projects, including Diabilities, a diabetes risk classifier trained on 250K+ BRFSS responses, and DermiDetect, a multi-class skin cancer-detection CNN to diagnose skin cancer deployed end-to-end at dermidetectai.com.",
+        tags: ["Machine Learning", "Computer Vision", "ML for Diagnosis"],
+        links: [
+          { label: "DermiDetect (live)", url: "https://dermidetectai.com" },
+          { label: "GitHub", url: "https://github.com/search?q=user%3AInsertWittyCommentHere%20topic%3Amachine-learning&type=repositories" }
+        ]
+      },
       {
         emoji: "🧬",
         title: "Cancer Epigenetics Research",
         subtitle: "Rice University · 2023–2025",
-        desc: "Two years with Dr. Brahmachari's lab building deep-learning models that predict transcriptional activity from epigenetic signature maps across cancer and non-cancer cell lines — pointing toward novel biomarkers and therapeutic targets.",
+        desc: "Two years under the guidance of Dr. Brahmachari, building deep-learning models that predict transcriptional activity from epigenetic signature maps across cancer and non-cancer cell lines to identify novel biomarkers and therapeutic targets.",
         tags: ["Deep Learning", "Epigenomics", "Python"],
         links: [
           { label: "Details on LinkedIn", url: "https://www.linkedin.com/in/riyan-jain" }
@@ -746,29 +759,18 @@
         emoji: "🩺",
         title: "Voice-Based Dementia Detection",
         subtitle: "MSKCC · 2025–present",
-        desc: "Ongoing collaboration with Dr. Shouval at Memorial Sloan Kettering on a longitudinal voice-AI system that learns gradual cognitive drift across patient recordings — aiming for diagnosis years before clinical symptoms appear.",
-        tags: ["Audio ML", "Temporal Models", "Clinical AI"],
+        desc: "Ongoing collaboration with Dr. Shouval at Memorial Sloan Kettering on a longitudinal voice-AI system that learns gradual cognitive drift across patient recordings, aiming for dementia diagnosis years before clinical symptoms appear.",
+        tags: ["Audiomic ML", "Longitudinal Modeling", "Clinical AI"],
         links: [
           { label: "Details on LinkedIn", url: "https://www.linkedin.com/in/riyan-jain" }
-        ]
-      },
-      {
-        emoji: "🔬",
-        title: "Applied ML for Healthcare",
-        subtitle: "Diabilities (2023) · DermiDetect (2024)",
-        desc: "Diabilities: a diabetes risk classifier trained on 250K+ BRFSS responses. DermiDetect: a multi-class skin lesion CNN deployed end-to-end at dermidetectai.com with confidence scores and a clean upload flow.",
-        tags: ["TensorFlow", "Computer Vision", "Flask"],
-        links: [
-          { label: "DermiDetect (live)", url: "https://dermidetectai.com" },
-          { label: "GitHub", url: "https://github.com/InsertWittyCommentHere" }
         ]
       },
       {
         emoji: "🧠",
         title: "Neural Computation",
         subtitle: "IMSA · MATLAB & NEST",
-        desc: "From-scratch Leaky-Integrate-and-Fire and Hodgkin-Huxley neuron models in MATLAB, scaled to 10,000+ neuron NEST simulations used to model and classify the progression of early Alzheimer's disease.",
-        tags: ["MATLAB", "NEST", "Neuroscience"],
+        desc: "Building Leaky-Integrate-and-Fire and Hodgkin-Huxley neuron models from scratch in MATLAB, scaled to 10,000+ neuron NEST simulations used to model and classify the progression of early Alzheimer's disease.",
+        tags: ["MATLAB", "NEST", "Computational Neuroscience"],
         links: [
           { label: "GitHub", url: "https://github.com/InsertWittyCommentHere" }
         ]
@@ -777,18 +779,18 @@
         emoji: "⚛️",
         title: "Computational Modeling",
         subtitle: "IMSA · C#",
-        desc: "Three C# simulations: 2D acoustic interference between speakers in a closed room, Newtonian rocket navigation paired with XOR-decryption (class competition), and a perceptron-driven predator-prey ecosystem with emergent oscillations.",
-        tags: ["C#", "Physics Sim", "Emergent Systems"],
+        desc: "A plethora of C# simulations, including 2D acoustic interference between speakers in a closed room, Newtonian rocket navigation paired with XOR-decryption in a quest to find &quot;ideal&quot; planets to visit, and a perceptron-driven predator-prey ecosystem with emergent oscillations.",
+        tags: ["C#", "System Simulation", "Foundations of CS"],
         links: [
-          { label: "GitHub", url: "https://github.com/InsertWittyCommentHere" }
+          { label: "GitHub", url: "https://github.com/search?q=user%3AInsertWittyCommentHere%20topic%3Acomputational-modeling&type=repositories" }
         ]
       },
       {
         emoji: "🌐",
         title: "Web Development",
         subtitle: "DermiDetect · Med-Equal",
-        desc: "Two production sites built from scratch with HTML, CSS, JS and Flask — no frameworks. DermiDetect serves a live ML model; Med-Equal is the home of the health equity nonprofit I founded.",
-        tags: ["JavaScript", "Flask", "Full-Stack"],
+        desc: "Along with this one, two production sites were built from scratch with HTML, CSS, JS, and Flask. DermiDetect serves a live ML model; Med-Equal is the home of my nonprofit, set on improving representation in clinical trials and healthcare.",
+        tags: ["HTML/CSS/JS", "Flask", "Full-Stack"],
         links: [
           { label: "dermidetectai.com", url: "https://dermidetectai.com" },
           { label: "med-equal.org", url: "https://med-equal.org" }
@@ -796,8 +798,9 @@
       }
     ],
     articles: [
-      { tag: "PUBLICATION", title: "Cancer Epigenetics — Springer Nature, with Dr. Brahmachari (Rice)", year: "MAY 2026", url: "https://www.linkedin.com/in/riyan-jain" },
-      { tag: "TALK",        title: "Presented at the AACR Annual Meeting", year: "2024", url: "https://www.linkedin.com/in/riyan-jain" },
+      { tag: "TALK",        title: "Will present at the International Young Researchers' Conference (IYRC) in Tokyo", year: "2026", url: "https://www.linkedin.com/in/riyan-jain" },
+      { tag: "PUBLICATION", title: "Cancer Epigenetics — Springer Nature, with Dr. Brahmachari (Rice)", year: "May 2026", url: "https://www.linkedin.com/in/riyan-jain" },
+      { tag: "TALK",        title: "Presented at the AACR Annual Meeting", year: "2024", url: "https://www.linkedin.com/posts/riyan-jain_aacr-aacr2025-cancerresearch-share-7323453005012381696-DzGp?utm_source=share&utm_medium=member_desktop&rcm=ACoAADtP-XwBxadn9JFZBPdjZSab_Q3lqXuZcfQ" },
       { tag: "LAUNCH",      title: "DermiDetect ships at dermidetectai.com", year: "2024", url: "https://dermidetectai.com" },
       { tag: "FOUNDED",     title: "Med-Equal, a health equity nonprofit", year: "2024", url: "https://med-equal.org" }
     ]
@@ -829,14 +832,21 @@
   const resumeEl = $("resume-link");
   const navResumeEl = $("nav-resume");
   if (!SITE.resumeUrl || SITE.resumeUrl === "#") {
-    resumeEl.style.display = "none";
+    if (resumeEl) resumeEl.style.display = "none";
     if (navResumeEl) navResumeEl.style.display = "none";
   } else {
-    resumeEl.href = SITE.resumeUrl;
-    if (navResumeEl) navResumeEl.href = SITE.resumeUrl;
+    if (resumeEl) {
+      resumeEl.href = SITE.resumeUrl;
+      resumeEl.target = "_blank";
+      resumeEl.rel = "noopener";
+    }
+    if (navResumeEl) {
+      navResumeEl.href = SITE.resumeUrl;
+      // navResumeEl already has target/rel set in markup
+    }
   }
 
-  // wire socials, hide each one whose URL is empty/missing
+  // wire socials, hide each one whose URL is empty/missing, and open in new tab
   for (const k of ["twitter","github","linkedin"]) {
     const url = SITE.socials[k];
     ["nav-","foot-","rail-"].forEach(p => {
@@ -844,6 +854,8 @@
       if (!el) return;
       if (!url) { el.style.display = "none"; return; }
       el.href = url;
+      el.target = "_blank";
+      el.rel = "noopener";
     });
   }
 
